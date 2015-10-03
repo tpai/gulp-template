@@ -1,12 +1,11 @@
 var gulp = require("gulp"),
-  webserver = require("gulp-webserver"),
+  connect = require("gulp-connect"),
+  browserSync = require("browser-sync").create(),
   autoprefixer = require("gulp-autoprefixer"),
   concat = require("gulp-concat"),
   minifyCSS = require("gulp-minify-css"),
   rename = require("gulp-rename"),
-  uglify = require("gulp-uglify"),
-  htmlreplace = require("gulp-html-replace"),
-  minifyHTML = require("gulp-minify-html");
+  uglify = require("gulp-uglify");
 
 gulp.task("js", function() {
   return gulp.src("app/components/js/*.js")
@@ -17,7 +16,7 @@ gulp.task("js", function() {
       path.basename += ".min";
       path.extname = ".js";
     }))
-    .pipe(gulp.dest("app/components/build/"));
+    .pipe(gulp.dest("app/pages/"));
 });
 
 gulp.task("css", function() {
@@ -25,38 +24,25 @@ gulp.task("css", function() {
     .pipe(concat("main.css"))
     .pipe(autoprefixer())
     .pipe(gulp.dest("app/components/build/"))
-    .pipe(minifyCSS()) //{ keepBreaks: true } 留換行
+    .pipe(minifyCSS())
     .pipe(rename(function(path) {
       path.basename += ".min";
       path.extname = ".css";
     }))
-    .pipe(gulp.dest("app/components/build/"));
-});
-
-gulp.task("html", function() {
-  var opts = {comments: false, spare: false, quotes: true};
-  return gulp.src("app/pages/index.html")
-    .pipe(htmlreplace({
-      "css": "/components/build/main.min.css",
-      "js": "/components/build/main.min.js"
-    }))
-    .pipe(minifyHTML(opts))
-    .pipe(rename(function(path) {
-      path.basename += ".min";
-      path.extname = ".html";
-    }))
     .pipe(gulp.dest("app/pages/"));
-})
-
-gulp.task("web", function() {
-  gulp.src("app/")
-  .pipe(webserver({
-    port: 8008,
-    livereload: true,
-    directoryListing: false,
-    open: true,
-    fallback: "pages/index.min.html"
-  }));
 });
 
-gulp.task("default", ["js", "css", "html"]);
+gulp.task("server", ["js", "css"], function() {
+  browserSync.init({server: "app/pages/"});
+  connect.server({livereoload: true, root: ["app/pages/"]})
+});
+
+gulp.task("watch", function() {
+  gulp.watch("app/components/js/*.js", ["js"]);
+  gulp.watch("app/components/css/*.css", ["css"]);
+  gulp.watch("app/pages/*.html").on("change", browserSync.reload);
+  gulp.watch("app/pages/*.css").on("change", browserSync.reload);
+  gulp.watch("app/pages/*.js").on("change", browserSync.reload);
+});
+
+gulp.task("default", ["js", "css", "server", "watch"]);
