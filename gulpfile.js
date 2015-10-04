@@ -1,14 +1,22 @@
 var gulp = require("gulp"),
   connect = require("gulp-connect"),
-  browserSync = require("browser-sync").create(),
   autoprefixer = require("gulp-autoprefixer"),
   concat = require("gulp-concat"),
-  minifyCSS = require("gulp-minify-css"),
   rename = require("gulp-rename"),
-  uglify = require("gulp-uglify");
+  uglify = require("gulp-uglify"),
+  notify = require("gulp-notify"),
+
+  jshint = require("gulp-jshint"),
+  sass = require("gulp-sass"),
+  minifyCSS = require("gulp-minify-css"),
+
+  browserSync = require("browser-sync").create();
+
 
 gulp.task("js", function() {
   return gulp.src("app/components/js/*.js")
+    .pipe(jshint())
+    .pipe(jshint.reporter('jshint-stylish'))
     .pipe(concat("main.js"))
     .pipe(gulp.dest("app/components/build/"))
     .pipe(uglify())
@@ -16,7 +24,8 @@ gulp.task("js", function() {
       path.basename += ".min";
       path.extname = ".js";
     }))
-    .pipe(gulp.dest("app/pages/"));
+    .pipe(gulp.dest("app/pages/"))
+    .pipe(notify("Scripts task done!"));
 });
 
 gulp.task("css", function() {
@@ -29,7 +38,8 @@ gulp.task("css", function() {
       path.basename += ".min";
       path.extname = ".css";
     }))
-    .pipe(gulp.dest("app/pages/"));
+    .pipe(gulp.dest("app/pages/"))
+    .pipe(notify("Styles task done!"));
 });
 
 gulp.task("server", ["js", "css"], function() {
@@ -37,7 +47,7 @@ gulp.task("server", ["js", "css"], function() {
   connect.server({livereoload: true, root: ["app/pages/"]})
 });
 
-gulp.task("watch", function() {
+gulp.task("watch", ["js", "css", "server"], function() {
   gulp.watch("app/components/js/*.js", ["js"]);
   gulp.watch("app/components/css/*.css", ["css"]);
   gulp.watch("app/pages/*.html").on("change", browserSync.reload);
