@@ -39,7 +39,7 @@ var WeatherDetail = React.createClass({
   },
   componentDidMount: function() {
     var self = this;
-    $.getJSON("http://api.openweathermap.org/data/2.5/forecast/daily?q="+this.props.city+",TW&units=metric", function(data) {
+    $.getJSON("http://api.openweathermap.org/data/2.5/forecast/daily?q="+this.props.city+",TW&units=metric&APPID=65563f61c46b8a8a88a5d41016ad8f2f", function(data) {
       self.setState({
         tem: data.list[0].temp.day,
         inf: data.list[0].weather[0].main+" ("+data.list[0].weather[0].description+")",
