@@ -42,7 +42,7 @@ var DailyWeather = React.createClass({
                 {
                   this.props.data.list.map(function(each) {
                     return (
-                      <tr><td>{new Date(each.dt*1000).toLocaleString().substr(0, 10)}</td><td>{each.temp.min}°C~{each.temp.max}°C</td><td>{each.weather[0].main}({each.weather[0].description})</td></tr>
+                      <tr><td>{new Date(each.dt*1000).toLocaleDateString()}</td><td>{each.temp.min}°C~{each.temp.max}°C</td><td>{each.weather[0].main}({each.weather[0].description})</td></tr>
                     );
                   })
                 }
