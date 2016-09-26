@@ -4,7 +4,7 @@ var Tabs = ReactBootstrap.Tabs,
 var CityWeather = React.createClass({
   getInitialState: function() {
     return {
-      now: "taichung",
+      now: "taipei",
       city: ["taipei", "taichung", "Yunlin", "kaosiung"]
     };
   },
