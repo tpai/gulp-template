@@ -4,7 +4,7 @@ var Tabs = ReactBootstrap.Tabs,
 var CityWeather = React.createClass({displayName: "CityWeather",
   getInitialState: function() {
     return {
-      now: "taichung",
+      now: "taipei",
       city: ["taipei", "taichung", "Yunlin", "kaosiung"]
     };
   },
@@ -39,7 +39,9 @@ var WeatherDetail = React.createClass({displayName: "WeatherDetail",
   },
   componentDidMount: function() {
     var self = this;
-    $.getJSON("http://api.openweathermap.org/data/2.5/forecast/daily?q="+this.props.city+",TW&units=metric", function(data) {
+    fetch("http://api.openweathermap.org/data/2.5/forecast/daily?q="+this.props.city+",TW&units=metric&APPID=65563f61c46b8a8a88a5d41016ad8f2f")
+    .then(function(data) { return data.json(); })
+    .then(function(data) {
       self.setState({
         tem: data.list[0].temp.day,
         inf: data.list[0].weather[0].main+" ("+data.list[0].weather[0].description+")",
@@ -104,7 +106,7 @@ var DailyWeather = React.createClass({displayName: "DailyWeather",
                 
                   this.props.data.list.map(function(each) {
                     return (
-                      React.createElement("tr", null, React.createElement("td", null, new Date(each.dt*1000).toLocaleString()), React.createElement("td", null, each.temp.min, "°C~", each.temp.max, "°C"), React.createElement("td", null, each.weather[0].main, "(", each.weather[0].description, ")"))
+                      React.createElement("tr", null, React.createElement("td", null, new Date(each.dt*1000).toLocaleDateString()), React.createElement("td", null, each.temp.min, "°C~", each.temp.max, "°C"), React.createElement("td", null, each.weather[0].main, "(", each.weather[0].description, ")"))
                     );
                   })
                 
