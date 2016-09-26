@@ -1,6 +1,4 @@
 var gulp = require("gulp"),
-  connect = require("gulp-connect"),
-  autoprefixer = require("gulp-autoprefixer"),
   concat = require("gulp-concat"),
   rename = require("gulp-rename"),
   uglify = require("gulp-uglify"),
@@ -9,10 +7,11 @@ var gulp = require("gulp"),
   react = require("gulp-react"),
   jshint = require("gulp-jshint"),
   sass = require("gulp-sass"),
+  autoprefixer = require("gulp-autoprefixer"),
   minifyCSS = require("gulp-minify-css"),
 
+  connect = require("gulp-connect"),
   browserSync = require("browser-sync").create();
-
 
 gulp.task("jsx", function() {
   return gulp.src("app/components/jsx/*.jsx")
@@ -31,8 +30,9 @@ gulp.task("jsx", function() {
 });
 
 gulp.task("css", function() {
-  return gulp.src("app/components/css/*.css")
-    .pipe(concat("main.css"))
+  return gulp.src("app/components/scss/*.scss")
+    .pipe(concat("main.scss"))
+    .pipe(sass().on('error', sass.logError))
     .pipe(autoprefixer())
     .pipe(gulp.dest("app/components/build/"))
     .pipe(minifyCSS())
